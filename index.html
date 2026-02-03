@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despacho de Provincias - Droguería Social</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Despacho">
+    <meta name="theme-color" content="#140087">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: white; padding: 20px; text-align: center; }
+        .header h1 { font-size: 1.3em; margin-bottom: 5px; color: #F9DB00; }
+        .header p { opacity: 0.9; font-size: 0.9em; }
+        .user-name { background: linear-gradient(135deg, #F9DB00 0%, #f0c800 100%); color: #140087; padding: 12px; text-align: center; font-weight: 700; font-size: 1.1em; }
+        .form-content { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2d3436; font-size: 0.95em; }
+        .form-group label .required { color: #e74c3c; margin-left: 3px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 1em; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #140087; outline: none; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .info-box { background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 10px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .info-box .label { font-size: 0.85em; color: #636e72; }
+        .info-box .value { font-weight: 600; color: #2d3436; font-size: 1.1em; }
+        .datetime-row { display: flex; gap: 10px; }
+        .datetime-row .info-box { flex: 1; }
+        
+        /* Scanner Section */
+        .scanner-section { background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 15px; margin-bottom: 20px; }
+        .scanner-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: #F9DB00; border: none; border-radius: 10px; font-size: 1em; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        .scanner-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        #reader { width: 100%; display: none; margin-bottom: 10px; }
+        .invoice-list { max-height: 150px; overflow-y: auto; }
+        .invoice-item { display: flex; justify-content: space-between; align-items: center; background: #d4edda; padding: 8px 12px; border-radius: 5px; margin-bottom: 5px; }
+        .invoice-item button { background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
+        .invoice-count { text-align: center; font-weight: 600; color: #140087; margin-top: 10px; }
+        
+        /* Photo Upload */
+        .photo-section { background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 15px; }
+        .photo-upload { position: relative; border: 2px dashed #140087; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: white; }
+        .photo-upload input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .photo-upload .icon { font-size: 3em; margin-bottom: 10px; }
+        .photo-upload p { color: #636e72; font-size: 0.9em; }
+        .photo-preview-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .photo-preview-item { position: relative; width: 80px; height: 80px; }
+        .photo-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .photo-preview-item .remove-btn { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; }
+        .photo-count { text-align: center; font-weight: 600; color: #140087; margin-top: 10px; }
+        
+        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-submit:disabled { background: #bdc3c7; cursor: not-allowed; }
+        
+        .success-message { display: none; text-align: center; padding: 40px; }
+        .success-message .checkmark { font-size: 4em; color: #27ae60; margin-bottom: 20px; }
+        
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .loading-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #140087; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Login Screen */
+        .login-screen { display: block; }
+        .main-screen { display: none; }
+        .login-box { padding: 30px; }
+        .login-box h2 { text-align: center; color: #140087; margin-bottom: 20px; }
+        .login-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: #F9DB00; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; }
+        .error-msg { color: #e74c3c; text-align: center; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Guardando despacho...</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📦 DESPACHO DE PROVINCIAS</h1>
+            <p>Droguería Social</p>
+        </div>
+        
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-box">
+                <h2>Iniciar Sesión</h2>
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPass" placeholder="Ingresa tu contraseña">
+                </div>
+                <button class="login-btn" onclick="iniciarSesion()">Ingresar</button>
+                <p class="error-msg" id="loginError">Usuario o contraseña incorrectos</p>
+            </div>
+        </div>
+        
+        <!-- Main Screen -->
+        <div class="main-screen" id="mainScreen">
+            <div class="user-name" id="userName">👤 Usuario</div>
+            
+            <form id="despachoForm" class="form-content">
+                <!-- Fecha y Hora automáticas -->
+                <div class="form-group">
+                    <label>📅 Fecha y Hora del Registro</label>
+                    <div class="datetime-row">
+                        <div class="info-box">
+                            <div>
+                                <div class="label">Fecha</div>
+                                <div class="value" id="fechaDisplay">--</div>
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div>
+                                <div class="label">Hora</div>
+                                <div class="value" id="horaDisplay">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scanner de Facturas -->
+                <div class="form-group">
+                    <label>📋 Facturas Escaneadas <span class="required">*</span></label>
+                    <div class="scanner-section">
+                        <button type="button" class="scanner-btn" id="scanBtn" onclick="toggleScanner()">📷 Escanear Factura</button>
+                        <div id="reader"></div>
+                        <div class="invoice-list" id="invoiceList"></div>
+                        <div class="invoice-count" id="invoiceCount">0 facturas escaneadas</div>
+                    </div>
+                </div>
+                
+                <!-- NIT Cliente -->
+                <div class="form-group">
+                    <label>🏢 NIT Cliente <span class="required">*</span></label>
+                    <input type="text" id="nitCliente" required placeholder="Número de NIT">
+                </div>
+                
+                <!-- Cantidad de Bultos -->
+                <div class="form-group">
+                    <label>📦 Cantidad de Bultos <span class="required">*</span></label>
+                    <input type="number" id="bultos" required placeholder="Número de bultos" min="1">
+                </div>
+                
+                <!-- Fotos -->
+                <div class="form-group">
+                    <label>📷 Fotos de Evidencia (máx. 15)</label>
+                    <div class="photo-section">
+                        <div class="photo-upload" id="photoUpload">
+                            <div class="icon">📷</div>
+                            <p>Toca para tomar fotos</p>
+                            <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
+                        </div>
+                        <div class="photo-preview-container" id="photoPreview"></div>
+                        <div class="photo-count" id="photoCount">0/15 fotos</div>
+                    </div>
+                </div>
+                
+                <!-- Observaciones -->
+                <div class="form-group">
+                    <label>📝 Observaciones</label>
+                    <textarea id="observaciones" placeholder="Observaciones adicionales (opcional)"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="btnSubmit">✅ Registrar Despacho</button>
+            </form>
+        </div>
+        
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <div class="checkmark">✅</div>
+            <h2>¡Despacho Registrado!</h2>
+            <p>La información se ha guardado correctamente.</p>
+            <button class="btn-submit" style="margin-top:20px;" onclick="nuevoDespacho()">➕ Nuevo Despacho</button>
+        </div>
+    </div>
+    
+    <!-- Html5Qrcode Library -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
+    <script>
+        // ==================== CONFIGURACIÓN ====================
+        const GOOGLE_SCRIPT_URL = 'PEGAR_URL_AQUI';
+        
+        const USUARIOS = {
+            'despachador1': 'ds2024',
+            'despachador2': 'ds2024',
+            'despachador3': 'ds2024',
+            'despachador4': 'ds2024',
+            'despachador5': 'ds2024',
+            'admin': 'admin123'
+        };
+        
+        // ==================== VARIABLES ====================
+        let currentUser = '';
+        let invoices = [];
+        let photos = [];
+        let html5QrCode = null;
+        let scannerActivo = false;
+        const MAX_PHOTOS = 15;
+        
+        // ==================== LOGIN ====================
+        function iniciarSesion() {
+            const user = document.getElementById('loginUser').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value;
+            
+            if (USUARIOS[user] && USUARIOS[user] === pass) {
+                currentUser = user;
+                document.getElementById('userName').textContent = '👤 ' + user.toUpperCase();
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainScreen').style.display = 'block';
+                document.getElementById('loginError').style.display = 'none';
+                inicializarFormulario();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+        
+        // Enter key para login
+        document.getElementById('loginPass').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') iniciarSesion();
+        });
+        
+        // ==================== RELOJ ====================
+        function actualizarReloj() {
+            const ahora = new Date();
+            document.getElementById('fechaDisplay').textContent = ahora.toLocaleDateString('es-CO');
+            document.getElementById('horaDisplay').textContent = ahora.toLocaleTimeString('es-CO', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+        }
+        
+        function inicializarFormulario() {
+            actualizarReloj();
+            setInterval(actualizarReloj, 1000);
+        }
+        
+        // ==================== SCANNER ====================
+        function toggleScanner() {
+            if (scannerActivo) {
+                stopScanner();
+            } else {
+                startScanner();
+            }
+        }
+        
+        function startScanner() {
+            const readerDiv = document.getElementById('reader');
+            readerDiv.style.display = 'block';
+            
+            html5QrCode = new Html5Qrcode("reader");
+            
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 150 } },
+                onScanSuccess,
+                onScanFailure
+            ).then(() => {
+                scannerActivo = true;
+                document.getElementById('scanBtn').textContent = '⏹️ Detener Scanner';
+            }).catch(err => {
+                console.error('Error al iniciar scanner:', err);
+                alert('No se pudo acceder a la cámara');
+            });
+        }
+        
+        function stopScanner() {
+            if (html5QrCode && scannerActivo) {
+                html5QrCode.stop().then(() => {
+                    scannerActivo = false;
+                    document.getElementById('reader').style.display = 'none';
+                    document.getElementById('scanBtn').textContent = '📷 Escanear Factura';
+                }).catch(err => console.error('Error al detener scanner:', err));
+            }
+        }
+        
+        let lastScanTime = 0;
+        function onScanSuccess(decodedText) {
+            const now = Date.now();
+            if (now - lastScanTime < 2000) return; // Evitar duplicados
+            lastScanTime = now;
+            
+            // Validar que empiece con FEV
+            if (!decodedText.toUpperCase().startsWith('FEV')) {
+                alert('Código inválido. Debe empezar con FEV');
+                return;
+            }
+            
+            // Verificar si ya existe
+            if (invoices.includes(decodedText)) {
+                alert('Esta factura ya fue escaneada');
+                return;
+            }
+            
+            invoices.push(decodedText);
+            updateInvoiceList();
+            
+            // Vibrar si es posible
+            if (navigator.vibrate) navigator.vibrate(200);
+        }
+        
+        function onScanFailure(error) {
+            // Silencioso
+        }
+        
+        function updateInvoiceList() {
+            const listDiv = document.getElementById('invoiceList');
+            listDiv.innerHTML = '';
+            
+            invoices.forEach((inv, index) => {
+                const item = document.createElement('div');
+                item.className = 'invoice-item';
+                item.innerHTML = `
+                    <span>${inv}</span>
+                    <button type="button" onclick="removeInvoice(${index})">✕</button>
+                `;
+                listDiv.appendChild(item);
+            });
+            
+            document.getElementById('invoiceCount').textContent = invoices.length + ' facturas escaneadas';
+        }
+        
+        function removeInvoice(index) {
+            invoices.splice(index, 1);
+            updateInvoiceList();
+        }
+        
+        // ==================== FOTOS ====================
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            files.forEach(file => {
+                if (photos.length >= MAX_PHOTOS) return;
+                
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        if (photos.length < MAX_PHOTOS) {
+                            // Comprimir imagen
+                            compressImage(event.target.result, 800, 0.6).then(compressed => {
+                                photos.push(compressed);
+                                updatePhotoPreview();
+                            });
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            e.target.value = '';
+        });
+        
+        function compressImage(dataUrl, maxWidth, quality) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = dataUrl;
+            });
+        }
+        
+        function updatePhotoPreview() {
+            const container = document.getElementById('photoPreview');
+            container.innerHTML = '';
+            
+            photos.forEach((photo, index) => {
+                const item = document.createElement('div');
+                item.className = 'photo-preview-item';
+                item.innerHTML = `
+                    <img src="${photo}" alt="Foto ${index + 1}">
+                    <button type="button" class="remove-btn" onclick="removePhoto(${index})">✕</button>
+                `;
+                container.appendChild(item);
+            });
+            
+            document.getElementById('photoCount').textContent = photos.length + '/15 fotos';
+        }
+        
+        function removePhoto(index) {
+            photos.splice(index, 1);
+            updatePhotoPreview();
+        }
+        
+        // ==================== ENVIAR FORMULARIO ====================
+        document.getElementById('despachoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validaciones
+            if (invoices.length === 0) {
+                alert('Debes escanear al menos una factura');
+                return;
+            }
+            
+            if (!document.getElementById('nitCliente').value) {
+                alert('Ingresa el NIT del cliente');
+                return;
+            }
+            
+            if (!document.getElementById('bultos').value) {
+                alert('Ingresa la cantidad de bultos');
+                return;
+            }
+            
+            // Detener scanner si está activo
+            if (scannerActivo) stopScanner();
+            
+            // Mostrar loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('btnSubmit').disabled = true;
+            
+            const ahora = new Date();
+            
+            const datos = {
+                usuario: currentUser,
+                fechaReal: ahora.toLocaleDateString('es-CO'),
+                horaReal: ahora.toLocaleTimeString('es-CO'),
+                timestampReal: ahora.getTime(),
+                facturas: invoices,
+                cantidadFacturas: invoices.length,
+                nitCliente: document.getElementById('nitCliente').value,
+                bultos: document.getElementById('bultos').value,
+                observaciones: document.getElementById('observaciones').value,
+                fotos: photos
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('mainScreen').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('btnSubmit').disabled = false;
+                alert('Error al enviar. Intenta de nuevo.');
+            }
+        });
+        
+        function nuevoDespacho() {
+            document.getElementById('despachoForm').reset();
+            invoices = [];
+            photos = [];
+            updateInvoiceList();
+            updatePhotoPreview();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('btnSubmit').disabled = false;
+        }
+    </script>
+</body>
+</html>
