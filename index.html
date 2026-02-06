@@ -126,14 +126,17 @@
                     </div>
                 </div>
                 
-                <!-- Scanner de Facturas -->
+                <!-- Facturas Manual Input -->
                 <div class="form-group">
-                    <label>📋 Facturas Escaneadas <span class="required">*</span></label>
+                    <label>📋 Facturas <span class="required">*</span></label>
                     <div class="scanner-section">
-                        <button type="button" class="scanner-btn" id="scanBtn" onclick="toggleScanner()">📷 Escanear Factura</button>
-                        <div id="reader"></div>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <div style="background: #140087; color: #F9DB00; padding: 12px 15px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 1.1em; display: flex; align-items: center;">FEV</div>
+                            <input type="tel" id="facturaNumero" placeholder="Número de factura" style="flex: 1; padding: 12px 15px; border: 2px solid #140087; border-radius: 0; font-size: 1.1em; border-left: none;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarFactura(); }">
+                            <button type="button" onclick="agregarFactura()" style="background: #27ae60; color: white; border: none; border-radius: 0 10px 10px 0; padding: 12px 20px; font-size: 1.3em; cursor: pointer;">➕</button>
+                        </div>
                         <div class="invoice-list" id="invoiceList"></div>
-                        <div class="invoice-count" id="invoiceCount">0 facturas escaneadas</div>
+                        <div class="invoice-count" id="invoiceCount">0 facturas agregadas</div>
                     </div>
                 </div>
                 
@@ -182,8 +185,6 @@
         </div>
     </div>
     
-    <!-- Html5Qrcode Library -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
     
     <script>
         // ==================== CONFIGURACIÓN ====================
@@ -202,8 +203,6 @@
         let currentUser = '';
         let invoices = [];
         let photos = [];
-        let html5QrCode = null;
-        let scannerActivo = false;
         const MAX_PHOTOS = 15;
         
         // ==================== LOGIN ====================
@@ -240,85 +239,44 @@
             setInterval(actualizarReloj, 1000);
         }
         
-        // ==================== SCANNER ====================
-        function toggleScanner() {
-            if (scannerActivo) {
-                stopScanner();
-            } else {
-                startScanner();
-            }
-        }
-        
-        function startScanner() {
-            const readerDiv = document.getElementById('reader');
-            readerDiv.style.display = 'block';
+        // ==================== FACTURAS MANUAL ====================
+        function agregarFactura() {
+            const input = document.getElementById('facturaNumero');
+            const numero = input.value.trim();
             
-            html5QrCode = new Html5Qrcode("reader");
-            
-            const config = {
-                fps: 2,
-                qrbox: { width: 300, height: 100 },
-                formatsToSupport: [ 
-                    Html5QrcodeSupportedFormats.CODE_39
-                ]
-            };
-            
-            html5QrCode.start(
-                { facingMode: "environment" },
-                config,
-                onScanSuccess,
-                onScanFailure
-            ).then(() => {
-                scannerActivo = true;
-                document.getElementById('scanBtn').textContent = '⏹️ Detener Scanner';
-            }).catch(err => {
-                console.error('Error al iniciar scanner:', err);
-                alert('No se pudo acceder a la cámara');
-            });
-        }
-        
-        function stopScanner() {
-            if (html5QrCode && scannerActivo) {
-                html5QrCode.stop().then(() => {
-                    scannerActivo = false;
-                    document.getElementById('reader').style.display = 'none';
-                    document.getElementById('scanBtn').textContent = '📷 Escanear Factura';
-                }).catch(err => console.error('Error al detener scanner:', err));
-            }
-        }
-        
-        let lastScanTime = 0;
-        function onScanSuccess(decodedText) {
-            const now = Date.now();
-            if (now - lastScanTime < 3000) return;
-            lastScanTime = now;
-            
-            // Limpiar el texto escaneado
-            let codigo = decodedText.trim().toUpperCase();
-            
-            // Validar formato: debe ser FEV seguido SOLO de números
-            const regex = /^FEV\d+$/;
-            
-            if (!regex.test(codigo)) {
-                alert('Código inválido: ' + codigo + '\n\nDebe ser FEV seguido solo de números.\nEjemplo: FEV1037721');
+            // Validar que no esté vacío
+            if (!numero) {
+                alert('Ingresa el número de factura');
+                input.focus();
                 return;
             }
+            
+            // Validar que solo sean números
+            if (!/^\d+$/.test(numero)) {
+                alert('Solo se permiten números');
+                input.focus();
+                return;
+            }
+            
+            const facturaCompleta = 'FEV' + numero;
             
             // Verificar si ya existe
-            if (invoices.includes(codigo)) {
-                alert('Esta factura ya fue escaneada: ' + codigo);
+            if (invoices.includes(facturaCompleta)) {
+                alert('Esta factura ya fue agregada: ' + facturaCompleta);
+                input.value = '';
+                input.focus();
                 return;
             }
             
-            invoices.push(codigo);
+            invoices.push(facturaCompleta);
             updateInvoiceList();
             
+            // Limpiar y enfocar para la siguiente
+            input.value = '';
+            input.focus();
+            
             // Vibrar confirmación
-            if (navigator.vibrate) navigator.vibrate(200);
-        }
-        
-        function onScanFailure(error) {
-            // Silencioso
+            if (navigator.vibrate) navigator.vibrate(100);
         }
         
         function updateInvoiceList() {
@@ -335,7 +293,7 @@
                 listDiv.appendChild(item);
             });
             
-            document.getElementById('invoiceCount').textContent = invoices.length + ' facturas escaneadas';
+            document.getElementById('invoiceCount').textContent = invoices.length + ' facturas agregadas';
         }
         
         function removeInvoice(index) {
@@ -421,7 +379,7 @@
             
             // Validaciones
             if (invoices.length === 0) {
-                alert('Debes escanear al menos una factura');
+                alert('Debes agregar al menos una factura');
                 return;
             }
             
@@ -434,9 +392,6 @@
                 alert('Ingresa la cantidad de bultos');
                 return;
             }
-            
-            // Detener scanner si está activo
-            if (scannerActivo) stopScanner();
             
             // Mostrar loading
             document.getElementById('loadingOverlay').style.display = 'flex';
