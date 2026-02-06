@@ -187,7 +187,7 @@
     
     <script>
         // ==================== CONFIGURACIÓN ====================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQ_lR2Uxvkq5PlETwQ3NH_k0O_9e2bdIkGlCayLEr9Ol1NGlASnCAPhdP7rkbkOy7wdg/exec';
+        const GOOGLE_SCRIPT_URL = 'PEGAR_URL_AQUI';
         
         const USUARIOS = {
             'despachador1': 'ds2024',
@@ -255,9 +255,23 @@
             
             html5QrCode = new Html5Qrcode("reader");
             
+            const config = {
+                fps: 5,
+                qrbox: { width: 280, height: 120 },
+                formatsToSupport: [ 
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8
+                ],
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                }
+            };
+            
             html5QrCode.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 250, height: 150 } },
+                config,
                 onScanSuccess,
                 onScanFailure
             ).then(() => {
@@ -282,25 +296,30 @@
         let lastScanTime = 0;
         function onScanSuccess(decodedText) {
             const now = Date.now();
-            if (now - lastScanTime < 2000) return; // Evitar duplicados
+            if (now - lastScanTime < 2500) return;
             lastScanTime = now;
             
-            // Validar que empiece con FEV
-            if (!decodedText.toUpperCase().startsWith('FEV')) {
-                alert('Código inválido. Debe empezar con FEV');
+            // Limpiar el texto escaneado
+            let codigo = decodedText.trim().toUpperCase();
+            
+            // Validar formato: debe ser FEV seguido SOLO de números
+            const regex = /^FEV\d+$/;
+            
+            if (!regex.test(codigo)) {
+                alert('Código inválido: ' + codigo + '\n\nDebe ser FEV seguido solo de números.\nEjemplo: FEV1037721');
                 return;
             }
             
             // Verificar si ya existe
-            if (invoices.includes(decodedText)) {
-                alert('Esta factura ya fue escaneada');
+            if (invoices.includes(codigo)) {
+                alert('Esta factura ya fue escaneada: ' + codigo);
                 return;
             }
             
-            invoices.push(decodedText);
+            invoices.push(codigo);
             updateInvoiceList();
             
-            // Vibrar si es posible
+            // Vibrar confirmación
             if (navigator.vibrate) navigator.vibrate(200);
         }
         
