@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Despacho de Provincias - Droguería Social</title>
+    <title>Despachos - Droguería Social</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Despacho">
@@ -81,7 +81,7 @@
     
     <div class="container">
         <div class="header">
-            <h1>📦 DESPACHO DE PROVINCIAS</h1>
+            <h1>📦 DESPACHOS</h1>
             <p>Droguería Social</p>
         </div>
         
@@ -105,6 +105,10 @@
         <!-- Main Screen -->
         <div class="main-screen" id="mainScreen">
             <div class="user-name" id="userName">👤 Usuario</div>
+            <div style="text-align: center; padding: 10px; background: #e8f4fd;">
+                <span id="saludoUsuario"></span>
+                <button onclick="cerrarSesion()" style="margin-left: 15px; background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">🚪 Salir</button>
+            </div>
             
             <form id="despachoForm" class="form-content">
                 <!-- Fecha y Hora automáticas -->
@@ -192,7 +196,10 @@
         
         const USUARIOS = {
             'luz': '12345',
-            'jhon': '12345'
+            'jhon': '12345',
+            'monica': '12345',
+            'luis': '12345',
+            'liliam': '12345'
         };
         
         // ==================== VARIABLES ====================
@@ -202,13 +209,26 @@
         const MAX_PHOTOS = 15;
         
         // ==================== LOGIN ====================
+        function obtenerSaludo() {
+            const hora = new Date().getHours();
+            if (hora >= 5 && hora < 12) {
+                return 'Buenos días';
+            } else if (hora >= 12 && hora < 18) {
+                return 'Buenas tardes';
+            } else {
+                return 'Buenas noches';
+            }
+        }
+        
         function iniciarSesion() {
             const user = document.getElementById('loginUser').value.trim().toLowerCase();
             const pass = document.getElementById('loginPass').value;
             
             if (USUARIOS[user] && USUARIOS[user] === pass) {
                 currentUser = user;
-                document.getElementById('userName').textContent = '👤 ' + user.toUpperCase();
+                const nombreCapitalizado = user.charAt(0).toUpperCase() + user.slice(1);
+                document.getElementById('userName').textContent = '👤 ' + nombreCapitalizado;
+                document.getElementById('saludoUsuario').textContent = '¡Hola ' + nombreCapitalizado + ', ' + obtenerSaludo() + '!';
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainScreen').style.display = 'block';
                 document.getElementById('loginError').style.display = 'none';
@@ -216,6 +236,19 @@
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
+        }
+        
+        function cerrarSesion() {
+            currentUser = '';
+            invoices = [];
+            photos = [];
+            document.getElementById('despachoForm').reset();
+            updateInvoiceList();
+            updatePhotoPreview();
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
         }
         
         // Enter key para login
