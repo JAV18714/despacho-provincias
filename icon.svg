@@ -9,43 +9,42 @@
       <stop offset="100%" style="stop-color:#F9DB00"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.3"/>
     </filter>
-    <!-- Path for curved text -->
-    <path id="curvedPath" d="M 80 400 Q 256 480 432 400" fill="transparent"/>
+    <path id="curvedPath" d="M 60 440 Q 256 510 452 440" fill="transparent"/>
   </defs>
   
-  <!-- Main circle background -->
-  <circle cx="256" cy="256" r="250" fill="url(#bgGradient)"/>
+  <!-- Full square background -->
+  <rect x="0" y="0" width="512" height="512" rx="90" fill="url(#bgGradient)"/>
   
-  <!-- Decorative rings -->
-  <circle cx="256" cy="256" r="230" fill="none" stroke="#F9DB00" stroke-width="2" opacity="0.2"/>
-  <circle cx="256" cy="256" r="210" fill="none" stroke="#F9DB00" stroke-width="1" opacity="0.1"/>
+  <!-- Decorative corner accents -->
+  <circle cx="50" cy="50" r="80" fill="#F9DB00" opacity="0.05"/>
+  <circle cx="462" cy="462" r="80" fill="#F9DB00" opacity="0.05"/>
   
   <!-- Package Group - Centered -->
   <g filter="url(#shadow)">
     <!-- Box left face (darker) -->
-    <path d="M156 180 L256 240 L256 350 L156 290 Z" fill="#d4b800"/>
+    <path d="M146 165 L256 230 L256 355 L146 290 Z" fill="#d4b800"/>
     
     <!-- Box right face -->
-    <path d="M356 180 L256 240 L256 350 L356 290 Z" fill="#e6c700"/>
+    <path d="M366 165 L256 230 L256 355 L366 290 Z" fill="#e6c700"/>
     
     <!-- Box top face -->
-    <path d="M156 180 L256 120 L356 180 L256 240 Z" fill="#FFE44D"/>
+    <path d="M146 165 L256 100 L366 165 L256 230 Z" fill="#FFE44D"/>
     
     <!-- Box tape vertical -->
-    <path d="M246 120 L246 240 L266 240 L266 120 Z" fill="#140087"/>
+    <path d="M245 100 L245 230 L267 230 L267 100 Z" fill="#140087"/>
     
     <!-- Box tape horizontal on top -->
-    <path d="M196 170 L316 170 L306 190 L206 190 Z" fill="#140087" opacity="0.9"/>
+    <path d="M190 155 L322 155 L310 177 L202 177 Z" fill="#140087" opacity="0.9"/>
     
     <!-- Checkmark circle -->
-    <circle cx="256" cy="295" r="40" fill="#140087"/>
-    <polyline points="238,295 253,310 278,283" fill="none" stroke="#F9DB00" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="256" cy="300" r="42" fill="#140087"/>
+    <polyline points="236,300 252,318 280,288" fill="none" stroke="#F9DB00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
   
   <!-- Curved text DESPACHOS -->
-  <text font-family="Arial Black, sans-serif" font-size="38" font-weight="bold" fill="#F9DB00" letter-spacing="6">
+  <text font-family="Arial Black, sans-serif" font-size="42" font-weight="bold" fill="#F9DB00" letter-spacing="5">
     <textPath href="#curvedPath" startOffset="50%" text-anchor="middle">DESPACHOS</textPath>
   </text>
 </svg>
