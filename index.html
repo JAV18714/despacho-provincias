@@ -147,12 +147,6 @@
                     </div>
                 </div>
                 
-                <!-- NIT Cliente -->
-                <div class="form-group">
-                    <label>🏢 NIT Cliente <span class="required">*</span></label>
-                    <input type="tel" id="nitCliente" required placeholder="Número de NIT">
-                </div>
-                
                 <!-- Fotos -->
                 <div class="form-group">
                     <label>📷 Fotos de Evidencia (máx. 15)</label>
@@ -409,11 +403,6 @@
                 return;
             }
             
-            if (!document.getElementById('nitCliente').value) {
-                alert('Ingresa el NIT del cliente');
-                return;
-            }
-            
             // Mostrar loading
             document.getElementById('loadingOverlay').style.display = 'flex';
             document.getElementById('btnSubmit').disabled = true;
@@ -427,7 +416,6 @@
                 timestampReal: ahora.getTime(),
                 facturas: invoices,
                 cantidadFacturas: invoices.length,
-                nitCliente: document.getElementById('nitCliente').value,
                 observaciones: document.getElementById('observaciones').value,
                 fotos: photos
             };
