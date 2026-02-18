@@ -149,7 +149,7 @@
                 
                 <!-- Fotos -->
                 <div class="form-group">
-                    <label>📷 Fotos de Evidencia (máx. 25)</label>
+                    <label>📷 Fotos de Evidencia (máx. 30)</label>
                     <div class="photo-section">
                         <div class="photo-upload" id="photoUpload">
                             <div class="icon">📷</div>
@@ -197,7 +197,7 @@
         let currentUser = '';
         let invoices = [];
         let photos = [];
-        const MAX_PHOTOS = 25;
+        const MAX_PHOTOS = 30;
         
         // ==================== LOGIN ====================
         function obtenerSaludo() {
@@ -353,8 +353,8 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         
-                        // Tamaño máximo 1200px para buena calidad
-                        const maxWidth = 1200;
+                        // Tamaño máximo 1000px para buena calidad
+                        const maxWidth = 1000;
                         let width = img.width;
                         let height = img.height;
                         
@@ -369,8 +369,8 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Calidad 75% - buen balance entre calidad y tamaño
-                        const compressed = canvas.toDataURL('image/jpeg', 0.75);
+                        // Calidad 70% - buen balance entre calidad y tamaño
+                        const compressed = canvas.toDataURL('image/jpeg', 0.70);
                         
                         // Liberar memoria
                         canvas.width = 0;
