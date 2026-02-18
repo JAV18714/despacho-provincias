@@ -353,8 +353,8 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         
-                        // Reducir tamaño máximo a 600px para ahorrar memoria
-                        const maxWidth = 600;
+                        // Tamaño máximo 1200px para buena calidad
+                        const maxWidth = 1200;
                         let width = img.width;
                         let height = img.height;
                         
@@ -369,8 +369,8 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Comprimir al 50% de calidad para reducir memoria
-                        const compressed = canvas.toDataURL('image/jpeg', 0.5);
+                        // Calidad 75% - buen balance entre calidad y tamaño
+                        const compressed = canvas.toDataURL('image/jpeg', 0.75);
                         
                         // Liberar memoria
                         canvas.width = 0;
