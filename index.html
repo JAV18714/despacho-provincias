@@ -143,7 +143,7 @@
                         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                             <div style="background: #140087; color: #F9DB00; padding: 12px 15px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 1.1em; display: flex; align-items: center;">FEV</div>
                             <input type="tel" id="facturaNumero" placeholder="Número de factura" style="flex: 1; padding: 12px 15px; border: 2px solid #140087; border-radius: 0; font-size: 1.1em; border-left: none;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarFactura(); }">
-                            <button type="button" onclick="agregarFactura()" style="background: #27ae60; color: white; border: none; border-radius: 0 10px 10px 0; padding: 12px 20px; font-size: 1.3em; cursor: pointer;">â</button>
+                            <button type="button" onclick="agregarFactura()" style="background: #27ae60; color: white; border: none; border-radius: 0 10px 10px 0; padding: 12px 20px; font-size: 1.3em; cursor: pointer;">+</button>
                         </div>
                         <div class="invoice-list" id="invoiceList"></div>
                         <div class="invoice-count" id="invoiceCount">0 facturas agregadas</div>
@@ -152,7 +152,7 @@
                 
                 <!-- Fotos -->
                 <div class="form-group">
-                    <label>&#128247; Fotos de Evidencia (máx. 25)</label>
+                    <label> de Evidencia (máx. 25)</label>
                     <div class="photo-section">
                         <div class="photo-upload" id="photoUpload">
                             <div class="icon">&#128247;</div>
@@ -170,16 +170,16 @@
                     <textarea id="observaciones" placeholder="Observaciones adicionales (opcional)"></textarea>
                 </div>
                 
-                <button type="submit" class="btn-submit" id="btnSubmit">â Registrar Despacho</button>
+                <button type="submit" class="btn-submit" id="btnSubmit">Registrar Despacho</button>
             </form>
         </div>
         
         <!-- Success Message -->
         <div class="success-message" id="successMessage">
-            <div class="checkmark">â</div>
+            <div class="checkmark">✓</div>
             <h2>¡Despacho Registrado!</h2>
             <p>La información se ha guardado correctamente.</p>
-            <button class="btn-submit" style="margin-top:20px;" onclick="nuevoDespacho()">â Nuevo Despacho</button>
+            <button class="btn-submit" style="margin-top:20px;" onclick="nuevoDespacho()">Nuevo Despacho</button>
         </div>
     </div>
     
@@ -221,7 +221,7 @@
             if (USUARIOS[user] && USUARIOS[user] === pass) {
                 currentUser = user;
                 const nombreCapitalizado = user.charAt(0).toUpperCase() + user.slice(1);
-                document.getElementById('userName').textContent = '&#128100; ' + nombreCapitalizado;
+                document.getElementById('userName').textContent = nombreCapitalizado;
                 document.getElementById('saludoUsuario').textContent = '¡Hola ' + nombreCapitalizado + ', ' + obtenerSaludo() + '!';
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainScreen').style.display = 'block';
@@ -311,7 +311,7 @@
                 item.className = 'invoice-item';
                 item.innerHTML = `
                     <span>${inv}</span>
-                    <button type="button" onclick="removeInvoice(${index})">â</button>
+                    <button type="button" onclick="removeInvoice(${index})"></button>
                 `;
                 listDiv.appendChild(item);
             });
@@ -398,7 +398,7 @@
                 item.className = 'photo-preview-item';
                 item.innerHTML = `
                     <img src="${photo}" alt="Foto ${index + 1}">
-                    <button type="button" class="remove-btn" onclick="removePhoto(${index})">â</button>
+                    <button type="button" class="remove-btn" onclick="removePhoto(/button>
                 `;
                 container.appendChild(item);
             });
