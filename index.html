@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Despachos - DroguerÃ­a Social</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -354,7 +355,7 @@
                         const canvas = document.createElement('canvas');
                         
                         // TamaÃ±o mÃ¡ximo 1000px para buena calidad
-                        const maxWidth = 900;
+                        const maxWidth = 700;
                         let width = img.width;
                         let height = img.height;
                         
@@ -449,6 +450,10 @@
                 document.getElementById('successMessage').style.display = 'block';
                 
             } catch (error) {
+    if (error && (error.name === 'QuotaExceededError' || (error.message && error.message.includes('storage')))) {
+      alert('⚠️ Almacenamiento del teléfono lleno. Por favor libera espacio y vuelve a intentarlo.');
+      return;
+    }
                 console.error('Error:', error);
                 document.getElementById('loadingOverlay').style.display = 'none';
                 document.getElementById('btnSubmit').disabled = false;
