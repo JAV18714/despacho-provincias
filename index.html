@@ -2,9 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Despachos - DroguerÃ­a Social</title>
+    <title>Despachos - Droguería Social</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Despacho">
@@ -87,36 +88,36 @@
         <div class="header">
             <img src="icon-192.png" alt="Despachos" style="width: 80px; height: 80px; margin-bottom: 10px;">
             <h1>ð¦ DESPACHOS</h1>
-            <p>DroguerÃ­a Social</p>
+            <p>Droguería Social</p>
         </div>
         
         <!-- Login Screen -->
         <div class="login-screen" id="loginScreen">
             <div class="login-box">
-                <h2>Iniciar SesiÃ³n</h2>
+                <h2>Iniciar Sesión</h2>
                 <div class="form-group">
                     <label>Usuario</label>
                     <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
                 </div>
                 <div class="form-group">
-                    <label>ContraseÃ±a</label>
-                    <input type="password" id="loginPass" placeholder="Ingresa tu contraseÃ±a">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPass" placeholder="Ingresa tu contraseña">
                 </div>
                 <button class="login-btn" onclick="iniciarSesion()">Ingresar</button>
-                <p class="error-msg" id="loginError">Usuario o contraseÃ±a incorrectos</p>
+                <p class="error-msg" id="loginError">Usuario o contraseña incorrectos</p>
             </div>
         </div>
         
         <!-- Main Screen -->
         <div class="main-screen" id="mainScreen">
-            <div class="user-name" id="userName">ð¤ Usuario</div>
+            <div class="user-name" id="userName">&#128100; Usuario</div>
             <div style="text-align: center; padding: 10px; background: #e8f4fd;">
                 <span id="saludoUsuario"></span>
                 <button onclick="cerrarSesion()" style="margin-left: 15px; background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">ðª Salir</button>
             </div>
             
             <form id="despachoForm" class="form-content">
-                <!-- Fecha y Hora automÃ¡ticas -->
+                <!-- Fecha y Hora automáticas -->
                 <div class="form-group">
                     <label>ð Fecha y Hora del Registro</label>
                     <div class="datetime-row">
@@ -141,7 +142,7 @@
                     <div class="scanner-section">
                         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                             <div style="background: #140087; color: #F9DB00; padding: 12px 15px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 1.1em; display: flex; align-items: center;">FEV</div>
-                            <input type="tel" id="facturaNumero" placeholder="NÃºmero de factura" style="flex: 1; padding: 12px 15px; border: 2px solid #140087; border-radius: 0; font-size: 1.1em; border-left: none;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarFactura(); }">
+                            <input type="tel" id="facturaNumero" placeholder="Número de factura" style="flex: 1; padding: 12px 15px; border: 2px solid #140087; border-radius: 0; font-size: 1.1em; border-left: none;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarFactura(); }">
                             <button type="button" onclick="agregarFactura()" style="background: #27ae60; color: white; border: none; border-radius: 0 10px 10px 0; padding: 12px 20px; font-size: 1.3em; cursor: pointer;">â</button>
                         </div>
                         <div class="invoice-list" id="invoiceList"></div>
@@ -151,10 +152,10 @@
                 
                 <!-- Fotos -->
                 <div class="form-group">
-                    <label>ð· Fotos de Evidencia (mÃ¡x. 25)</label>
+                    <label>&#128247; Fotos de Evidencia (máx. 25)</label>
                     <div class="photo-section">
                         <div class="photo-upload" id="photoUpload">
-                            <div class="icon">ð·</div>
+                            <div class="icon">&#128247;</div>
                             <p>Toca para tomar fotos</p>
                             <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
                         </div>
@@ -176,15 +177,15 @@
         <!-- Success Message -->
         <div class="success-message" id="successMessage">
             <div class="checkmark">â</div>
-            <h2>Â¡Despacho Registrado!</h2>
-            <p>La informaciÃ³n se ha guardado correctamente.</p>
+            <h2>¡Despacho Registrado!</h2>
+            <p>La información se ha guardado correctamente.</p>
             <button class="btn-submit" style="margin-top:20px;" onclick="nuevoDespacho()">â Nuevo Despacho</button>
         </div>
     </div>
     
     
     <script>
-        // ==================== CONFIGURACIÃN ====================
+        // ==================== CONFIGURACIÓN ====================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoBhb8hC237jD621QFtrjDPz7odlhu0CwjQ15dyrC70JJc0bO1cUgOgDKHwJO_qjY5sg/exec';
         
         const USUARIOS = {
@@ -205,7 +206,7 @@
         function obtenerSaludo() {
             const hora = new Date().getHours();
             if (hora >= 5 && hora < 12) {
-                return 'Buenos dÃ­as';
+                return 'Buenos días';
             } else if (hora >= 12 && hora < 18) {
                 return 'Buenas tardes';
             } else {
@@ -220,8 +221,8 @@
             if (USUARIOS[user] && USUARIOS[user] === pass) {
                 currentUser = user;
                 const nombreCapitalizado = user.charAt(0).toUpperCase() + user.slice(1);
-                document.getElementById('userName').textContent = 'ð¤ ' + nombreCapitalizado;
-                document.getElementById('saludoUsuario').textContent = 'Â¡Hola ' + nombreCapitalizado + ', ' + obtenerSaludo() + '!';
+                document.getElementById('userName').textContent = '&#128100; ' + nombreCapitalizado;
+                document.getElementById('saludoUsuario').textContent = '¡Hola ' + nombreCapitalizado + ', ' + obtenerSaludo() + '!';
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainScreen').style.display = 'block';
                 document.getElementById('loginError').style.display = 'none';
@@ -266,16 +267,16 @@
             const input = document.getElementById('facturaNumero');
             const numero = input.value.trim();
             
-            // Validar que no estÃ© vacÃ­o
+            // Validar que no esté vacío
             if (!numero) {
-                alert('Ingresa el nÃºmero de factura');
+                alert('Ingresa el número de factura');
                 input.focus();
                 return;
             }
             
-            // Validar que solo sean nÃºmeros
+            // Validar que solo sean números
             if (!/^\d+$/.test(numero)) {
-                alert('Solo se permiten nÃºmeros');
+                alert('Solo se permiten números');
                 input.focus();
                 return;
             }
@@ -297,7 +298,7 @@
             input.value = '';
             input.focus();
             
-            // Vibrar confirmaciÃ³n
+            // Vibrar confirmación
             if (navigator.vibrate) navigator.vibrate(100);
         }
         
@@ -329,7 +330,7 @@
             
             for (const file of files) {
                 if (photos.length >= MAX_PHOTOS) {
-                    alert('MÃ¡ximo ' + MAX_PHOTOS + ' fotos permitidas');
+                    alert('Máximo ' + MAX_PHOTOS + ' fotos permitidas');
                     break;
                 }
                 
@@ -355,7 +356,7 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         
-                        // TamaÃ±o mÃ¡ximo 1000px para buena calidad
+                        // Tamaño máximo 1000px para buena calidad
                         const maxWidth = 700;
                         let width = img.width;
                         let height = img.height;
@@ -371,7 +372,7 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Calidad 70% - buen balance entre calidad y tamaÃ±o
+                        // Calidad 70% - buen balance entre calidad y tamaño
                         const compressed = canvas.toDataURL('image/jpeg', 0.70);
                         
                         // Liberar memoria
@@ -452,7 +453,7 @@
                 
             } catch (error) {
     if (error && (error.name === 'QuotaExceededError' || (error.message && error.message.includes('storage')))) {
-      alert('⚠️ Almacenamiento del teléfono lleno. Por favor libera espacio y vuelve a intentarlo.');
+      alert('&#9888; Almacenamiento del teléfono lleno. Por favor libera espacio y vuelve a intentarlo.');
       return;
     }
                 console.error('Error:', error);
