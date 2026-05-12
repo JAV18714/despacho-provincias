@@ -2,487 +2,169 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Despachos - Droguería Social</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Despacho">
-    <meta name="theme-color" content="#140087">
-    <link rel="icon" type="image/png" href="icon-192.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: white; padding: 20px; text-align: center; }
-        .header h1 { font-size: 1.3em; margin-bottom: 5px; color: #F9DB00; }
-        .header p { opacity: 0.9; font-size: 0.9em; }
-        .user-name { background: linear-gradient(135deg, #F9DB00 0%, #f0c800 100%); color: #140087; padding: 12px; text-align: center; font-weight: 700; font-size: 1.1em; }
-        .form-content { padding: 25px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2d3436; font-size: 0.95em; }
-        .form-group label .required { color: #e74c3c; margin-left: 3px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 1em; }
-        .form-group input:focus, .form-group textarea:focus { border-color: #140087; outline: none; }
-        .form-group textarea { min-height: 80px; resize: vertical; }
-        .info-box { background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 10px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .info-box .label { font-size: 0.85em; color: #636e72; }
-        .info-box .value { font-weight: 600; color: #2d3436; font-size: 1.1em; }
-        .datetime-row { display: flex; gap: 10px; }
-        .datetime-row .info-box { flex: 1; }
-        
-        /* Scanner Section */
-        .scanner-section { background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 15px; margin-bottom: 20px; }
-        .scanner-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: #F9DB00; border: none; border-radius: 10px; font-size: 1em; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
-        .scanner-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
-        #reader { width: 100%; display: none; margin-bottom: 10px; }
-        .invoice-list { max-height: 150px; overflow-y: auto; }
-        .invoice-item { display: flex; justify-content: space-between; align-items: center; background: #d4edda; padding: 8px 12px; border-radius: 5px; margin-bottom: 5px; }
-        .invoice-item button { background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
-        .invoice-count { text-align: center; font-weight: 600; color: #140087; margin-top: 10px; }
-        
-        /* Photo Upload */
-        .photo-section { background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 15px; }
-        .photo-upload { position: relative; border: 2px dashed #140087; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: white; }
-        .photo-upload input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .photo-upload .icon { font-size: 3em; margin-bottom: 10px; }
-        .photo-upload p { color: #636e72; font-size: 0.9em; }
-        .photo-preview-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-        .photo-preview-item { position: relative; width: 55px; height: 55px; }
-        .photo-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
-        .photo-preview-item .remove-btn { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 10px; }
-        .photo-count { text-align: center; font-weight: 600; color: #140087; margin-top: 10px; }
-        
-        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 10px; }
-        .btn-submit:disabled { background: #bdc3c7; cursor: not-allowed; }
-        
-        .success-message { display: none; text-align: center; padding: 40px; }
-        .success-message .checkmark { font-size: 4em; color: #27ae60; margin-bottom: 20px; }
-        
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
-        .loading-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #140087; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Login Screen */
-        .login-screen { display: block; }
-        .main-screen { display: none; }
-        .login-box { padding: 30px; }
-        .login-box h2 { text-align: center; color: #140087; margin-bottom: 20px; }
-        .login-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: #F9DB00; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; }
-        .error-msg { color: #e74c3c; text-align: center; margin-top: 10px; display: none; }
-    </style>
-  <link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Despachos - Droguería Social</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Despachos">
+<meta name="theme-color" content="#140087">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+.header { background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: white; padding: 20px; text-align: center; }
+.header h1 { font-size: 1.3em; margin-bottom: 5px; color: #F9DB00; }
+.header p { opacity: 0.9; font-size: 0.9em; }
+.user-name { background: linear-gradient(135deg, #F9DB00 0%, #f0c800 100%); color: #140087; padding: 12px; text-align: center; font-weight: 700; font-size: 1.1em; }
+.form-content { padding: 25px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2d3436; font-size: 0.95em; }
+.form-group label .required { color: #e74c3c; margin-left: 3px; }
+.form-group input, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 1em; }
+.form-group input:focus, .form-group textarea:focus { border-color: #140087; outline: none; }
+.form-group textarea { min-height: 80px; resize: vertical; }
+.info-box { background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 10px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+.info-box .label { font-size: 0.85em; color: #636e72; }
+.info-box .value { font-weight: 600; color: #2d3436; font-size: 1.1em; }
+.datetime-row { display: flex; gap: 10px; }
+.datetime-row .info-box { flex: 1; }
+.scanner-section { background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 15px; margin-bottom: 20px; }
+.invoice-list { max-height: 150px; overflow-y: auto; }
+.invoice-item { display: flex; justify-content: space-between; align-items: center; background: #d4edda; padding: 8px 12px; border-radius: 5px; margin-bottom: 5px; }
+.invoice-item button { background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 1em; }
+.invoice-count { text-align: center; font-weight: 600; color: #140087; margin-top: 10px; }
+.photo-section { background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 15px; }
+.photo-upload { position: relative; border: 2px dashed #140087; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: white; }
+.photo-upload input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.photo-upload .icon { font-size: 3em; margin-bottom: 10px; }
+.photo-upload p { color: #636e72; font-size: 0.9em; }
+.photo-preview-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+.photo-preview-item { position: relative; width: 55px; height: 55px; }
+.photo-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.photo-preview-item .remove-btn { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 10px; }
+.photo-count { text-align: center; font-weight: 600; color: #140087; margin-top: 10px; }
+.btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 10px; }
+.btn-submit:disabled { background: #bdc3c7; cursor: not-allowed; }
+.success-message { display: none; text-align: center; padding: 40px; }
+.success-message .checkmark { font-size: 4em; color: #27ae60; margin-bottom: 20px; }
+.loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+.loading-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
+.spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #140087; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.login-screen { display: block; }
+.main-screen { display: none; }
+.login-box { padding: 30px; }
+.login-box h2 { text-align: center; color: #140087; margin-bottom: 20px; }
+.login-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: #F9DB00; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; }
+.error-msg { color: #e74c3c; text-align: center; margin-top: 10px; display: none; }
+</style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p id="loadingText">Guardando despacho...</p>
-        </div>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p id="loadingText">Guardando despacho...</p>
+  </div>
+</div>
+<div class="container">
+  <div class="header">
+    <img src="icon-192.png" alt="Despachos" style="width:80px;height:80px;margin-bottom:10px;">
+    <h1>DESPACHOS</h1>
+    <p>Droguería Social</p>
+  </div>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h2>Iniciar Sesión</h2>
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass" placeholder="Ingresa tu contraseña">
+      </div>
+      <button class="login-btn" onclick="iniciarSesion()">Ingresar</button>
+      <p class="error-msg" id="loginError">Usuario o contraseña incorrectos</p>
     </div>
-    
-    <div class="container">
-        <div class="header">
-            <img src="icon-192.png" alt="Despachos" style="width: 80px; height: 80px; margin-bottom: 10px;">
-            <h1>DESPACHOS</h1>
-            <p>Droguería Social</p>
-        </div>
-        
-        <!-- Login Screen -->
-        <div class="login-screen" id="loginScreen">
-            <div class="login-box">
-                <h2>Iniciar Sesión</h2>
-                <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="loginPass" placeholder="Ingresa tu contraseña">
-                </div>
-                <button class="login-btn" onclick="iniciarSesion()">Ingresar</button>
-                <p class="error-msg" id="loginError">Usuario o contraseña incorrectos</p>
-            </div>
-        </div>
-        
-        <!-- Main Screen -->
-        <div class="main-screen" id="mainScreen">
-            <div class="user-name" id="userName">&#128100; Usuario</div>
-            <div style="text-align: center; padding: 10px; background: #e8f4fd;">
-                <span id="saludoUsuario"></span>
-                <button onclick="cerrarSesion()" style="margin-left: 15px; background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;"> Salir</button>
-            </div>
-            
-            <form id="despachoForm" class="form-content">
-                <!-- Fecha y Hora automáticas -->
-                <div class="form-group">
-                    <label> Fecha y Hora del Registro</label>
-                    <div class="datetime-row">
-                        <div class="info-box">
-                            <div>
-                                <div class="label">Fecha</div>
-                                <div class="value" id="fechaDisplay">--</div>
-                            </div>
-                        </div>
-                        <div class="info-box">
-                            <div>
-                                <div class="label">Hora</div>
-                                <div class="value" id="horaDisplay">--</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Facturas Manual Input -->
-                <div class="form-group">
-                    <label> Facturas <span class="required">*</span></label>
-                    <div class="scanner-section">
-                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                            <div style="background: #140087; color: #F9DB00; padding: 12px 15px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 1.1em; display: flex; align-items: center;">FEV</div>
-                            <input type="tel" id="facturaNumero" placeholder="Número de factura" style="flex: 1; padding: 12px 15px; border: 2px solid #140087; border-radius: 0; font-size: 1.1em; border-left: none;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarFactura(); }">
-                            <button type="button" onclick="agregarFactura()" style="background: #27ae60; color: white; border: none; border-radius: 0 10px 10px 0; padding: 12px 20px; font-size: 1.3em; cursor: pointer;">+</button>
-                        </div>
-                        <div class="invoice-list" id="invoiceList"></div>
-                        <div class="invoice-count" id="invoiceCount">0 facturas agregadas</div>
-                    </div>
-                </div>
-                
-                <!-- Fotos -->
-                <div class="form-group">
-                    <label>Fotos de Evidencia (m&#225;x. 25)</label>
-                    <div class="photo-section">
-                        <div class="photo-upload" id="photoUpload">
-                            <div class="icon">&#128247;</div>
-                            <p>Toca para tomar fotos</p>
-                            <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
-                        </div>
-                        <div class="photo-preview-container" id="photoPreview"></div>
-                        <div class="photo-count" id="photoCount">0/40 fotos</div>
-                    </div>
-                </div>
-                
-                <!-- Observaciones -->
-                <div class="form-group">
-                    <label> Observaciones</label>
-                    <textarea id="observaciones" placeholder="Observaciones adicionales (opcional)"></textarea>
-                </div>
-                
-                <button type="submit" class="btn-submit" id="btnSubmit">Registrar Despacho</button>
-            </form>
-        </div>
-        
-        <!-- Success Message -->
-        <div class="success-message" id="successMessage">
-            <div class="checkmark">✓</div>
-            <h2>¡Despacho Registrado!</h2>
-            <p>La información se ha guardado correctamente.</p>
-            <button class="btn-submit" style="margin-top:20px;" onclick="nuevoDespacho()">Nuevo Despacho</button>
-        </div>
+  </div>
+  <div class="main-screen" id="mainScreen">
+    <div class="user-name" id="userName">Usuario</div>
+    <div style="text-align:center;padding:10px;background:#e8f4fd;">
+      <span id="saludoUsuario"></span>
+      <button onclick="cerrarSesion()" style="margin-left:15px;background:#e74c3c;color:white;border:none;padding:8px 15px;border-radius:5px;cursor:pointer;font-size:0.9em;">Salir</button>
     </div>
-    
-    
-    <script>
-        // ==================== CONFIGURACIÓN ====================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoBhb8hC237jD621QFtrjDPz7odlhu0CwjQ15dyrC70JJc0bO1cUgOgDKHwJO_qjY5sg/exec';
-        
-        const USUARIOS = {
-            'luz': '12345',
-            'jhon': '12345',
-            'monica': '12345',
-            'luis': '12345',
-            'liliam': '12345'
-        };
-        
-        // ==================== VARIABLES ====================
-        let currentUser = '';
-        let invoices = [];
-        let photos = [];
-        const MAX_PHOTOS = 25;
-        
-        // ==================== LOGIN ====================
-        function obtenerSaludo() {
-            const hora = new Date().getHours();
-            if (hora >= 5 && hora < 12) {
-                return 'Buenos días';
-            } else if (hora >= 12 && hora < 18) {
-                return 'Buenas tardes';
-            } else {
-                return 'Buenas noches';
-            }
-        }
-        
-        function iniciarSesion() {
-            const user = document.getElementById('loginUser').value.trim().toLowerCase();
-            const pass = document.getElementById('loginPass').value;
-            
-            if (USUARIOS[user] && USUARIOS[user] === pass) {
-                currentUser = user;
-                const nombreCapitalizado = user.charAt(0).toUpperCase() + user.slice(1);
-                document.getElementById('userName').textContent = nombreCapitalizado;
-                document.getElementById('saludoUsuario').textContent = '¡Hola ' + nombreCapitalizado + ', ' + obtenerSaludo() + '!';
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainScreen').style.display = 'block';
-                document.getElementById('loginError').style.display = 'none';
-                inicializarFormulario();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        }
-        
-        function cerrarSesion() {
-            currentUser = '';
-            invoices = [];
-            photos = [];
-            document.getElementById('despachoForm').reset();
-            updateInvoiceList();
-            updatePhotoPreview();
-            document.getElementById('mainScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('loginUser').value = '';
-            document.getElementById('loginPass').value = '';
-        }
-        
-        // Enter key para login
-        document.getElementById('loginPass').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') iniciarSesion();
-        });
-        
-        // ==================== RELOJ ====================
-        function actualizarReloj() {
-            const ahora = new Date();
-            document.getElementById('fechaDisplay').textContent = ahora.toLocaleDateString('es-CO');
-            document.getElementById('horaDisplay').textContent = ahora.toLocaleTimeString('es-CO', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-        }
-        
-        function inicializarFormulario() {
-            actualizarReloj();
-            setInterval(actualizarReloj, 1000);
-        }
-        
-        // ==================== FACTURAS MANUAL ====================
-        function agregarFactura() {
-            const input = document.getElementById('facturaNumero');
-            const numero = input.value.trim();
-            
-            // Validar que no esté vacío
-            if (!numero) {
-                alert('Ingresa el número de factura');
-                input.focus();
-                return;
-            }
-            
-            // Validar que solo sean números
-            if (!/^\d+$/.test(numero)) {
-                alert('Solo se permiten números');
-                input.focus();
-                return;
-            }
-            
-            const facturaCompleta = 'FEV' + numero;
-            
-            // Verificar si ya existe
-            if (invoices.includes(facturaCompleta)) {
-                alert('Esta factura ya fue agregada: ' + facturaCompleta);
-                input.value = '';
-                input.focus();
-                return;
-            }
-            
-            invoices.push(facturaCompleta);
-            updateInvoiceList();
-            
-            // Limpiar y enfocar para la siguiente
-            input.value = '';
-            input.focus();
-            
-            // Vibrar confirmación
-            if (navigator.vibrate) navigator.vibrate(100);
-        }
-        
-        function updateInvoiceList() {
-            const listDiv = document.getElementById('invoiceList');
-            listDiv.innerHTML = '';
-            
-            invoices.forEach((inv, index) => {
-                const item = document.createElement('div');
-                item.className = 'invoice-item';
-                item.innerHTML = `
-                    <span>${inv}</span>
-                    <button type="button" onclick="removeInvoice(${index})"></button>
-                `;
-                listDiv.appendChild(item);
-            });
-            
-            document.getElementById('invoiceCount').textContent = invoices.length + ' facturas agregadas';
-        }
-        
-        function removeInvoice(index) {
-            invoices.splice(index, 1);
-            updateInvoiceList();
-        }
-        
-        // ==================== FOTOS ====================
-        document.getElementById('photoInput').addEventListener('change', async function(e) {
-            const files = Array.from(e.target.files);
-            
-            for (const file of files) {
-                if (photos.length >= MAX_PHOTOS) {
-                    alert('Máximo ' + MAX_PHOTOS + ' fotos permitidas');
-                    break;
-                }
-                
-                if (file.type.startsWith('image/')) {
-                    try {
-                        const compressed = await compressImage(file);
-                        photos.push(compressed);
-                        updatePhotoPreview();
-                    } catch (err) {
-                        console.error('Error comprimiendo foto:', err);
-                    }
-                }
-            }
-            
-            e.target.value = '';
-        });
-        
-        function compressImage(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        
-                        // Tamaño máximo 1000px para buena calidad
-                        const maxWidth = 700;
-                        let width = img.width;
-                        let height = img.height;
-                        
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
-                        
-                        canvas.width = width;
-                        canvas.height = height;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // Calidad 70% - buen balance entre calidad y tamaño
-                        const compressed = canvas.toDataURL('image/jpeg', 0.70);
-                        
-                        // Liberar memoria
-                        canvas.width = 0;
-                        canvas.height = 0;
-                        
-                        resolve(compressed);
-                    };
-                    img.onerror = reject;
-                    img.src = event.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-        
-        function updatePhotoPreview() {
-            const container = document.getElementById('photoPreview');
-            container.innerHTML = '';
-            
-            photos.forEach((photo, index) => {
-                const item = document.createElement('div');
-                item.className = 'photo-preview-item';
-                item.innerHTML = `
-                    <img src="${photo}" alt="Foto ${index + 1}">
-                    <button type="button" class="remove-btn" onclick="removePhoto(/button>
-                `;
-                container.appendChild(item);
-            });
-            
-            document.getElementById('photoCount').textContent = photos.length + '/' + MAX_PHOTOS + ' fotos';
-        }
-        
-        function removePhoto(index) {
-            photos.splice(index, 1);
-            updatePhotoPreview();
-        }
-        
-        // ==================== ENVIAR FORMULARIO ====================
-        document.getElementById('despachoForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Validaciones
-            if (invoices.length === 0) {
-                alert('Debes agregar al menos una factura');
-                return;
-            }
-            
-            // Mostrar loading
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            document.getElementById('loadingText').textContent = 'Guardando despacho...';
-            document.getElementById('btnSubmit').disabled = true;
-            
-            const ahora = new Date();
-            
-            const datos = {
-                usuario: currentUser,
-                fechaReal: ahora.toLocaleDateString('es-CO'),
-                horaReal: ahora.toLocaleTimeString('es-CO'),
-                timestampReal: ahora.getTime(),
-                facturas: invoices,
-                cantidadFacturas: invoices.length,
-                observaciones: document.getElementById('observaciones').value,
-                fotos: photos
-            };
-            
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-                
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('mainScreen').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-                
-            } catch (error) {
-    if (error && (error.name === 'QuotaExceededError' || (error.message && error.message.includes('storage')))) {
-      alert('&#9888; Almacenamiento del teléfono lleno. Por favor libera espacio y vuelve a intentarlo.');
-      return;
-    }
-                console.error('Error:', error);
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('btnSubmit').disabled = false;
-                alert('Error al enviar. Intenta de nuevo.');
-            }
-        });
-        
-        function nuevoDespacho() {
-            document.getElementById('despachoForm').reset();
-            invoices = [];
-            photos = [];
-            updateInvoiceList();
-            updatePhotoPreview();
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('mainScreen').style.display = 'block';
-            document.getElementById('btnSubmit').disabled = false;
-        }
-    </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(() => console.log('SW registrado'))
-          .catch(e => console.log('SW error:', e));
-      });
-    }
-  </script>
+    <form id="despachoForm" class="form-content">
+      <div class="form-group">
+        <label>Fecha y Hora del Registro</label>
+        <div class="datetime-row">
+          <div class="info-box"><div><div class="label">Fecha</div><div class="value" id="fechaDisplay">--</div></div></div>
+          <div class="info-box"><div><div class="label">Hora</div><div class="value" id="horaDisplay">--</div></div></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Facturas <span class="required">*</span></label>
+        <div class="scanner-section">
+          <div style="display:flex;gap:10px;margin-bottom:15px;">
+            <div style="background:#140087;color:#F9DB00;padding:12px 15px;border-radius:10px 0 0 10px;font-weight:bold;font-size:1.1em;display:flex;align-items:center;">FEV</div>
+            <input type="tel" id="facturaNumero" placeholder="Número de factura" style="flex:1;padding:12px 15px;border:2px solid #140087;border-radius:0;font-size:1.1em;border-left:none;" onkeypress="if(event.key==='Enter'){event.preventDefault();agregarFactura();}">
+            <button type="button" onclick="agregarFactura()" style="background:#27ae60;color:white;border:none;border-radius:0 10px 10px 0;padding:12px 20px;font-size:1.3em;cursor:pointer;">+</button>
+          </div>
+          <div class="invoice-list" id="invoiceList"></div>
+          <div class="invoice-count" id="invoiceCount">0 facturas agregadas</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Fotos de Evidencia (m&#225;x. 25)</label>
+        <div class="photo-section">
+          <div class="photo-upload" id="photoUpload">
+            <div class="icon">&#128247;</div>
+            <p>Toca para tomar fotos</p>
+            <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
+          </div>
+          <div class="photo-preview-container" id="photoPreview"></div>
+          <div class="photo-count" id="photoCount">0/25 fotos</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Observaciones</label>
+        <textarea id="observaciones" placeholder="Observaciones adicionales (opcional)"></textarea>
+      </div>
+      <button type="submit" class="btn-submit" id="btnSubmit">Registrar Despacho</button>
+    </form>
+  </div>
+  <div class="success-message" id="successMessage">
+    <div class="checkmark">&#10003;</div>
+    <h2>&#161;Despacho Registrado!</h2>
+    <p>La información se ha guardado correctamente.</p>
+    <button class="btn-submit" style="margin-top:20px;" onclick="nuevoDespacho()">Nuevo Despacho</button>
+  </div>
+</div>
+<script>
+var GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxoBhb8hC237jD621QFtrjDPz7odlhu0CwjQ15dyrC70JJc0bO1cUgOgDKHwJO_qjY5sg/exec';
+var USUARIOS={'luz':'12345','jhon':'12345','monica':'12345','luis':'12345','liliam':'12345'};
+var currentUser='',invoices=[],photos=[],MAX_PHOTOS=25;
+function obtenerSaludo(){var h=new Date().getHours();if(h>=5&&h<12)return 'Buenos días';if(h>=12&&h<18)return 'Buenas tardes';return 'Buenas noches';}
+function iniciarSesion(){var user=document.getElementById('loginUser').value.trim().toLowerCase();var pass=document.getElementById('loginPass').value;if(USUARIOS[user]&&USUARIOS[user]===pass){currentUser=user;var nombre=user.charAt(0).toUpperCase()+user.slice(1);document.getElementById('userName').textContent=nombre;document.getElementById('saludoUsuario').textContent='¡Hola '+nombre+', '+obtenerSaludo()+'!';document.getElementById('loginScreen').style.display='none';document.getElementById('mainScreen').style.display='block';document.getElementById('loginError').style.display='none';inicializarFormulario();}else{document.getElementById('loginError').style.display='block';}}
+function cerrarSesion(){currentUser='';invoices=[];photos=[];document.getElementById('despachoForm').reset();updateInvoiceList();updatePhotoPreview();document.getElementById('mainScreen').style.display='none';document.getElementById('loginScreen').style.display='block';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';}
+document.getElementById('loginPass').addEventListener('keypress',function(e){if(e.key==='Enter')iniciarSesion();});
+function actualizarReloj(){var a=new Date();document.getElementById('fechaDisplay').textContent=a.toLocaleDateString('es-CO');document.getElementById('horaDisplay').textContent=a.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function inicializarFormulario(){actualizarReloj();setInterval(actualizarReloj,1000);}
+function agregarFactura(){var input=document.getElementById('facturaNumero');var numero=input.value.trim();if(!numero){alert('Ingresa el número de factura');input.focus();return;}if(!/^d+$/.test(numero)){alert('Solo se permiten números');input.focus();return;}var completa='FEV'+numero;if(invoices.indexOf(completa)!==-1){alert('Esta factura ya fue agregada: '+completa);input.value='';input.focus();return;}invoices.push(completa);updateInvoiceList();input.value='';input.focus();if(navigator.vibrate)navigator.vibrate(100);}
+function updateInvoiceList(){var listDiv=document.getElementById('invoiceList');listDiv.innerHTML='';invoices.forEach(function(inv,index){var item=document.createElement('div');item.className='invoice-item';var span=document.createElement('span');span.textContent=inv;var btn=document.createElement('button');btn.type='button';btn.textContent='×';btn.onclick=function(){removeInvoice(index);};item.appendChild(span);item.appendChild(btn);listDiv.appendChild(item);});document.getElementById('invoiceCount').textContent=invoices.length+' facturas agregadas';}
+function removeInvoice(index){invoices.splice(index,1);updateInvoiceList();}
+document.getElementById('photoInput').addEventListener('change',async function(e){var files=Array.from(e.target.files);for(var i=0;i<files.length;i++){if(photos.length>=MAX_PHOTOS){alert('Máximo '+MAX_PHOTOS+' fotos permitidas');break;}if(files[i].type.startsWith('image/')){try{var compressed=await compressImage(files[i]);photos.push(compressed);updatePhotoPreview();}catch(err){console.error('Error:',err);}}}e.target.value='';});
+function compressImage(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onload=function(event){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxWidth=700;var width=img.width;var height=img.height;if(width>maxWidth){height=Math.round((height*maxWidth)/width);width=maxWidth;}canvas.width=width;canvas.height=height;var ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,width,height);var compressed=canvas.toDataURL('image/jpeg',0.75);canvas.width=0;canvas.height=0;resolve(compressed);};img.onerror=reject;img.src=event.target.result;};reader.onerror=reject;reader.readAsDataURL(file);});}
+function updatePhotoPreview(){var container=document.getElementById('photoPreview');container.innerHTML='';photos.forEach(function(photo,index){var item=document.createElement('div');item.className='photo-preview-item';var img=document.createElement('img');img.src=photo;img.alt='Foto '+(index+1);var btn=document.createElement('button');btn.type='button';btn.className='remove-btn';btn.textContent='×';btn.onclick=function(){removePhoto(index);};item.appendChild(img);item.appendChild(btn);container.appendChild(item);});document.getElementById('photoCount').textContent=photos.length+'/'+MAX_PHOTOS+' fotos';}
+function removePhoto(index){photos.splice(index,1);updatePhotoPreview();}
+document.getElementById('despachoForm').addEventListener('submit',async function(e){e.preventDefault();if(invoices.length===0){alert('Debes agregar al menos una factura');return;}document.getElementById('loadingOverlay').style.display='flex';document.getElementById('loadingText').textContent='Guardando despacho...';document.getElementById('btnSubmit').disabled=true;var ahora=new Date();var datos={usuario:currentUser,fechaReal:ahora.toLocaleDateString('es-CO'),horaReal:ahora.toLocaleTimeString('es-CO'),timestampReal:ahora.getTime(),facturas:invoices,cantidadFacturas:invoices.length,observaciones:document.getElementById('observaciones').value,fotos:photos};try{await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(datos)});document.getElementById('loadingOverlay').style.display='none';document.getElementById('mainScreen').style.display='none';document.getElementById('successMessage').style.display='block';}catch(error){if(error&&(error.name==='QuotaExceededError'||(error.message&&error.message.indexOf('storage')!==-1))){alert('Almacenamiento del teléfono lleno. Libera espacio e intenta de nuevo.');document.getElementById('loadingOverlay').style.display='none';document.getElementById('btnSubmit').disabled=false;return;}console.error('Error:',error);document.getElementById('loadingOverlay').style.display='none';document.getElementById('btnSubmit').disabled=false;alert('Error al enviar. Intenta de nuevo.');}});
+function nuevoDespacho(){document.getElementById('despachoForm').reset();invoices=[];photos=[];updateInvoiceList();updatePhotoPreview();document.getElementById('successMessage').style.display='none';document.getElementById('mainScreen').style.display='block';document.getElementById('btnSubmit').disabled=false;}
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').then(function(){console.log('SW registrado');}).catch(function(e){console.log('SW error:',e);});});}
+</script>
 </body>
 </html>
