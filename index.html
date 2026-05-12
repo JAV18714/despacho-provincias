@@ -73,6 +73,7 @@
         .login-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #140087 0%, #1a56a0 100%); color: #F9DB00; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; }
         .error-msg { color: #e74c3c; text-align: center; margin-top: 10px; display: none; }
     </style>
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="loading-overlay" id="loadingOverlay">
@@ -472,5 +473,15 @@
             document.getElementById('btnSubmit').disabled = false;
         }
     </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('SW registrado'))
+          .catch(e => console.log('SW error:', e));
+      });
+    }
+  </script>
 </body>
 </html>
